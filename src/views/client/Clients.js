@@ -26,8 +26,13 @@ export function Clients() {
 	}, [clients]);
 
 	let updateClient = useCallback((id, patch) => {
-		http.patch("clients/" + id, patch);
-	}, []);
+		http.patch("clients/" + id, patch)
+			.then(({data: client}) => {
+				let i = clients.findIndex(c => c.id === client.id);
+				clients[i] = client;
+				setClients([...clients]);
+			});
+	}, [clients]);
 
 	let removeClient = useCallback((id) => {
 		http.delete("/clients/" + id)
