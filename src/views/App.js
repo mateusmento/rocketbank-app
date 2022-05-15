@@ -1,11 +1,11 @@
+import { Outlet } from 'react-router-dom';
 import './App.css';
-import { Clients } from './views/client/Clients';
 
 function App() {
 
 	return (
 		<div className="App">
-			<Clients/>
+			<Outlet/>
 		</div>
 	);
 }
