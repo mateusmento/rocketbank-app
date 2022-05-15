@@ -20,8 +20,8 @@ export function ClientRow({client: sourceClient, onRemove, onUpdate}) {
 
 	let confirmEditing = useCallback(() => {
 		setIsEditing(false);
-		onUpdate(client);
-	}, [client, onUpdate]);
+		onUpdate(diff(sourceClient, client));
+	}, [sourceClient, client, onUpdate]);
 
 	let cancelEditing = useCallback(() => {
 		setClient(cloneClient());
@@ -50,4 +50,10 @@ export function ClientRow({client: sourceClient, onRemove, onUpdate}) {
 			</td>
 		</tr>
 	);
+}
+
+function diff(original, modified) {
+	return Object.entries(modified)
+		.filter(([key, value]) => original[key] !== value)
+		.reduce((acc, [key, value]) => ({...acc, [key]: value}), {});
 }
