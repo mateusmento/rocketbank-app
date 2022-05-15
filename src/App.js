@@ -1,5 +1,5 @@
 import './App.css';
-import { Clients } from './Clients';
+import { Clients } from './views/client/Clients';
 
 function App() {
 
