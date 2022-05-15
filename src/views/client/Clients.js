@@ -19,7 +19,7 @@ export function Clients() {
 		setIsNewClientFormOpen(!isNewClientFormOpen)
 	}, [isNewClientFormOpen]);
 
-	let onSaveClient = useCallback((client) => {
+	let createClient = useCallback((client) => {
 		http.post("/clients", client)
 			.then(({data}) => setClients([...clients, data]));
 		setIsNewClientFormOpen(false);
@@ -58,7 +58,7 @@ export function Clients() {
 							onRemove={() => removeClient(client.id)}
 						/>
 					)}
-					{isNewClientFormOpen && <CreateClientFormRow onSave={onSaveClient}/>}
+					{isNewClientFormOpen && <CreateClientFormRow onSave={createClient}/>}
 				</tbody>
 			</table>
 			<button onClick={toggleNewClientForm}>Novo Cliente</button>
