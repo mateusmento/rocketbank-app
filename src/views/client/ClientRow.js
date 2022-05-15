@@ -1,7 +1,7 @@
 import { Fragment, useCallback, useState } from 'react';
 import { Editable, EditableContext } from '../../ui/Editable';
 
-export function ClientRow({client: sourceClient, onRemove, onUpdate}) {
+export function ClientRow({client: originalClient, onRemove, onUpdate}) {
 	let [isEditing, setIsEditing] = useState(false);
 
 	let [client, setClient] = useState(() => cloneClient());
@@ -11,8 +11,8 @@ export function ClientRow({client: sourceClient, onRemove, onUpdate}) {
 	}, [client]);
 
 	let cloneClient = useCallback(() => {
-		return JSON.parse(JSON.stringify(sourceClient));
-	}, [sourceClient]);
+		return JSON.parse(JSON.stringify(originalClient));
+	}, [originalClient]);
 
 	let startEditing = useCallback(() => {
 		setIsEditing(true);
@@ -20,8 +20,8 @@ export function ClientRow({client: sourceClient, onRemove, onUpdate}) {
 
 	let confirmEditing = useCallback(() => {
 		setIsEditing(false);
-		onUpdate(diff(sourceClient, client));
-	}, [sourceClient, client, onUpdate]);
+		onUpdate(diff(originalClient, client));
+	}, [originalClient, client, onUpdate]);
 
 	let cancelEditing = useCallback(() => {
 		setClient(cloneClient());
