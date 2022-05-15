@@ -4,15 +4,11 @@ import { Editable, EditableContext } from '../../ui/Editable';
 export function ClientRow({client: originalClient, onRemove, onUpdate}) {
 	let [isEditing, setIsEditing] = useState(false);
 
-	let [client, setClient] = useState(() => cloneClient());
+	let [client, setClient] = useState(() => clone(originalClient));
 
 	let setField = useCallback((name, value) => {
 		setClient({...client, [name]: value});
 	}, [client]);
-
-	let cloneClient = useCallback(() => {
-		return JSON.parse(JSON.stringify(originalClient));
-	}, [originalClient]);
 
 	let startEditing = useCallback(() => {
 		setIsEditing(true);
@@ -24,9 +20,9 @@ export function ClientRow({client: originalClient, onRemove, onUpdate}) {
 	}, [originalClient, client, onUpdate]);
 
 	let cancelEditing = useCallback(() => {
-		setClient(cloneClient());
+		setClient(clone(originalClient));
 		setIsEditing(false);
-	}, [cloneClient]);
+	}, [originalClient]);
 
 	return (
 		<tr>
@@ -50,6 +46,10 @@ export function ClientRow({client: originalClient, onRemove, onUpdate}) {
 			</td>
 		</tr>
 	);
+}
+
+function clone(value) {
+	return JSON.parse(JSON.stringify(value));
 }
 
 function diff(original, modified) {
