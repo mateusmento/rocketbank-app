@@ -10,23 +10,23 @@ export function ClientRow({client: sourceClient, onRemove, onUpdate}) {
 		setClient({...client, [name]: value});
 	}, [client]);
 
-	function cloneClient() {
+	let cloneClient = useCallback(() => {
 		return JSON.parse(JSON.stringify(sourceClient));
-	}
+	}, [sourceClient]);
 
-	function startEditing() {
+	let startEditing = useCallback(() => {
 		setIsEditing(true);
-	}
+	}, []);
 
-	function confirmEditing() {
+	let confirmEditing = useCallback(() => {
 		setIsEditing(false);
 		onUpdate(client);
-	}
+	}, [client, onUpdate]);
 
-	function cancelEditing() {
+	let cancelEditing = useCallback(() => {
 		setClient(cloneClient());
 		setIsEditing(false);
-	}
+	}, [cloneClient]);
 
 	return (
 		<tr>
