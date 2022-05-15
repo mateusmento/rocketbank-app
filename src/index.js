@@ -1,14 +1,28 @@
 import React from 'react';
 import ReactDOM from 'react-dom/client';
 import './index.css';
-import App from './App';
+import App from './views/App';
 import reportWebVitals from './reportWebVitals';
+import { BrowserRouter, Route, Routes } from 'react-router-dom';
+import { SignIn } from './views/signup/SignIn';
+import { Clients } from './views/client/Clients';
 
 const root = ReactDOM.createRoot(document.getElementById('root'));
+
 root.render(
-  <React.StrictMode>
-    <App />
-  </React.StrictMode>
+	<BrowserRouter>
+		<Routes>
+			<Route path="/" element={<App />}>
+				<Route path="/signin" element={<SignIn/>}/>
+				<Route path="/clients" element={<Clients/>}/>
+				<Route path="*" element={
+					<main style={{ padding: "1rem" }}>
+						<p>Página não encontrada.</p>
+					</main>
+				}/>
+			</Route>
+		</Routes>
+	</BrowserRouter>
 );
 
 // If you want to start measuring performance in your app, pass a function
