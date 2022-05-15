@@ -58,7 +58,7 @@ export function Clients() {
 							onRemove={() => removeClient(client.id)}
 						/>
 					)}
-					{isNewClientFormOpen && <CreateClientFormRow onSave={createClient}/>}
+					{isNewClientFormOpen && <CreateClientFormRow onCreate={createClient}/>}
 				</tbody>
 			</table>
 			<button onClick={toggleNewClientForm}>Novo Cliente</button>
