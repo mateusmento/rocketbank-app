@@ -1,17 +1,14 @@
-import axios from 'axios';
 import { useCallback, useEffect, useState } from 'react';
-import { BASE_API_URL } from '../../config';
+import { http } from '../../shared/http';
 import { ClientRow } from './ClientRow';
 import { CreateClientFormRow } from './CreateClientFormRow';
-
-const http = axios.create({baseURL: BASE_API_URL});
 
 export function Clients() {
 	let [clients, setClients] = useState([]);
 	let [isNewClientFormOpen, setIsNewClientFormOpen] = useState(false);
 
 	useEffect(() => {
-		http.get("/clients")
+		http().get("/clients", {params: {page: 1, size: 10}})
 			.then(({data}) => setClients(data));
 	}, []);
 
@@ -20,13 +17,13 @@ export function Clients() {
 	}, [isNewClientFormOpen]);
 
 	let createClient = useCallback((client) => {
-		http.post("/clients", client)
+		http().post("/clients", client)
 			.then(({data}) => setClients([...clients, data]));
 		setIsNewClientFormOpen(false);
 	}, [clients]);
 
 	let updateClient = useCallback((id, patch) => {
-		http.patch("clients/" + id, patch)
+		http().patch("clients/" + id, patch)
 			.then(({data: client}) => {
 				let i = clients.findIndex(c => c.id === client.id);
 				clients[i] = client;
@@ -35,7 +32,7 @@ export function Clients() {
 	}, [clients]);
 
 	let removeClient = useCallback((id) => {
-		http.delete("/clients/" + id)
+		http().delete("/clients/" + id)
 			.then(() => setClients(clients.filter(c => c.id !== id)));
 	}, [clients]);
 
