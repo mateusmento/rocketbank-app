@@ -6,7 +6,7 @@ import { CreateClientFormRow } from './CreateClientFormRow';
 export function Clients() {
 	let [clients, setClients] = useState([]);
 	let [page, setPage] = useState(1);
-	let [pageSize] = useState(1);
+	let [pageSize] = useState(10);
 	let [isNewClientFormOpen, setIsNewClientFormOpen] = useState(false);
 
 	useEffect(() => {
