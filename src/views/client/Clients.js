@@ -5,12 +5,14 @@ import { CreateClientFormRow } from './CreateClientFormRow';
 
 export function Clients() {
 	let [clients, setClients] = useState([]);
+	let [page, setPage] = useState(1);
+	let [pageSize] = useState(1);
 	let [isNewClientFormOpen, setIsNewClientFormOpen] = useState(false);
 
 	useEffect(() => {
-		http().get("/clients", {params: {page: 1, size: 10}})
+		http().get("/clients", {params: {page, size: pageSize}})
 			.then(({data}) => setClients(data));
-	}, []);
+	}, [page, pageSize]);
 
 	let toggleNewClientForm = useCallback(() => {
 		setIsNewClientFormOpen(!isNewClientFormOpen)
@@ -54,6 +56,8 @@ export function Clients() {
 				</tbody>
 			</table>
 			<button onClick={toggleNewClientForm}>Novo Cliente</button>
+			<button onClick={() => setPage(page - 1)}>Anterior</button>
+			<button onClick={() => setPage(page + 1)}>Próxima</button>
 		</div>
 	);
 }
