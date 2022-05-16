@@ -1,9 +1,7 @@
-import axios from "axios";
-import { useCallback, useEffect, useState } from "react";
+import { useCallback, useState } from "react";
 import { Link, useNavigate } from "react-router-dom";
-import { BASE_API_URL } from "../../config";
+import { http } from "../../shared/http";
 
-const http = axios.create({baseURL: BASE_API_URL});
 
 export function SignIn() {
 	let [email, setEmail] = useState("");
@@ -12,7 +10,7 @@ export function SignIn() {
 
 	let signin = useCallback((e) => {
 		e.preventDefault();
-		http.post("/auth/signin", {email, password})
+		http().post("/auth/signin", {email, password})
 			.then(({data}) => {
 				localStorage.setItem("accessToken", data.accessToken)
 				navigate("/clients");

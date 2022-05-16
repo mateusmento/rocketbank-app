@@ -1,9 +1,6 @@
-import axios from "axios";
 import { useCallback, useState } from "react";
 import { Link, useNavigate } from "react-router-dom";
-import { BASE_API_URL } from "../../config";
-
-const http = axios.create({baseURL: BASE_API_URL});
+import { http } from "../../shared/http";
 
 export function SignUp() {
 	let [name, setName] = useState("");
@@ -13,7 +10,7 @@ export function SignUp() {
 
 	let signup = useCallback((e) => {
 		e.preventDefault();
-		http.post("/users", {name, email, password})
+		http().post("/users", {name, email, password})
 			.then(({data}) => navigate("/signin"));
 	}, [name, email, password, navigate]);
 
