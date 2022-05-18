@@ -22,7 +22,6 @@ export function ClientRow({client: originalClient, onRemove, onUpdate}) {
 
 	let confirmEditing = useCallback(async (client) => {
 		try {
-			console.log(formattedOriginalClient(), client);
 			let patch = diff(formattedOriginalClient(), client);
 			if (patch.birthDate)
 				patch.birthDate = moment(patch.birthDate, "DD/MM/YYYY").format("YYYY-MM-DD");
@@ -46,22 +45,23 @@ export function ClientRow({client: originalClient, onRemove, onUpdate}) {
 
 	return (
 		<TableRow>
-			<TableCell>
-				<form id="new-client-form" onSubmit={formik.handleSubmit}></form>
-				<Editable isEditing={isEditing} form="new-client-form" value={formik.values.name} name="name" onChange={formik.handleChange}/>
-				{isEditing && formik.errors.name && formik.touched.name
-					&& <small className="d-block">{formik.errors.name}</small>}
-			</TableCell>
-			<TableCell>
-				<Editable isEditing={isEditing} form="new-client-form" value={formik.values.cpf} name="cpf" onChange={formik.handleChange}/>
-				{isEditing && formik.errors.cpf && formik.touched.cpf
-					&& <small className="d-block">{formik.errors.cpf}</small>}
-			</TableCell>
-			<TableCell>
-				<Editable isEditing={isEditing} form="new-client-form" value={formik.values.birthDate} name="birthDate" onChange={formik.handleChange}/>
-				{isEditing && formik.errors.birthDate && formik.touched.birthDate
-					&& <small className="d-block">{formik.errors.birthDate}</small>}
-			</TableCell>
+			<EditableContext.Provider value={isEditing}>
+				<TableCell>
+					<Editable value={formik.values.name} name="name" onChange={formik.handleChange}/>
+					{isEditing && formik.errors.name && formik.touched.name
+						&& <small className="d-block">{formik.errors.name}</small>}
+				</TableCell>
+				<TableCell>
+					<Editable value={formik.values.cpf} name="cpf" onChange={formik.handleChange}/>
+					{isEditing && formik.errors.cpf && formik.touched.cpf
+						&& <small className="d-block">{formik.errors.cpf}</small>}
+				</TableCell>
+				<TableCell>
+					<Editable value={formik.values.birthDate} name="birthDate" onChange={formik.handleChange}/>
+					{isEditing && formik.errors.birthDate && formik.touched.birthDate
+						&& <small className="d-block">{formik.errors.birthDate}</small>}
+				</TableCell>
+			</EditableContext.Provider>
 			<TableCell>
 				{!isEditing ?
 						<Fragment>
@@ -70,8 +70,8 @@ export function ClientRow({client: originalClient, onRemove, onUpdate}) {
 						</Fragment>
 					:
 						<Fragment>
+							<Button type="submit" onClick={formik.handleSubmit}><Check/></Button>
 							<Button type="button" onClick={cancelEditing}><Cancel/></Button>
-							<Button form="new-client-form" type="submit"><Check/></Button>
 						</Fragment>
 				}
 			</TableCell>
