@@ -1,20 +1,34 @@
 import { Button, TextField, Typography } from "@mui/material";
-import { useCallback, useState } from "react";
+import { useFormik } from "formik";
+import { useCallback } from "react";
 import { http } from "../../shared/http";
+import * as Yup from 'yup';
 
 export function SignUp({onSignUp}) {
-	let [name, setName] = useState("");
-	let [email, setEmail] = useState("");
-	let [password, setPassword] = useState("");
 
-	let signup = useCallback((e) => {
-		e.preventDefault();
-		http().post("/users", {name, email, password})
+	let signup = useCallback((user) => {
+		http().post("/users", user)
 			.then(({data}) => onSignUp(data));
-	}, [name, email, password, onSignUp]);
+	}, []);
+
+	let formik = useFormik({
+		initialValues: {},
+		validateOnChange: true,
+		onSubmit: signup,
+		validationSchema: Yup.object().shape({
+			name: Yup.string().required("Forneça seu nome"),
+			email: Yup.string()
+				.email("Email inválido")
+				.required("Forneça seu email"),
+			password: Yup.string()
+				.required("Forneça uma senha")
+				.min(8, "Senha precisa ter mínimo de 8 caracteres"),
+		}),
+	});
+
 
 	return (
-		<form onSubmit={signup}>
+		<form onSubmit={formik.handleSubmit}>
 			<Typography variant="h5" element="h3" marginLeft={3}>Crie uma nova conta</Typography>
 			<TextField
 				label="Nome"
@@ -22,18 +36,23 @@ export function SignUp({onSignUp}) {
 				size="small"
 				fullWidth
 				margin="normal"
-				value={name}
-				onChange={(e) => setName(e.target.value)}
+				value={formik.values.name}
+				onChange={formik.handleChange}
+				error={formik.errors.name && formik.submitCount > 0}
+				helperText={formik.submitCount > 0 && formik.errors.name}
+				{...formik.getFieldProps("name")}
 			/>
 			<TextField
 				label="Email"
-				type="email"
 				variant="outlined"
 				size="small"
 				fullWidth
 				margin="normal"
-				value={email}
-				onChange={(e) => setEmail(e.target.value)}
+				value={formik.values.email}
+				onChange={formik.handleChange}
+				error={formik.errors.email && formik.submitCount > 0}
+				helperText={formik.submitCount > 0 && formik.errors.email}
+				{...formik.getFieldProps("email")}
 			/>
 			<TextField
 				type="password"
@@ -42,8 +61,11 @@ export function SignUp({onSignUp}) {
 				size="small"
 				fullWidth
 				margin="normal"
-				value={password}
-				onChange={(e) => setPassword(e.target.value)}
+				value={formik.values.password}
+				onChange={formik.handleChange}
+				error={formik.errors.password && formik.submitCount > 0}
+				helperText={formik.submitCount > 0 && formik.errors.password}
+				{...formik.getFieldProps("password")}
 			/>
 			<Button
 				type="submit"
