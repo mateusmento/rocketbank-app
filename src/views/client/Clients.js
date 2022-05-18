@@ -21,19 +21,16 @@ export function Clients() {
 			});
 	}, [page]);
 
-	let showNewClientForm = useCallback(() => {
-		setIsNewClientFormOpen(true);
-	}, []);
-
-	let hideNewClientForm = useCallback(() => {
-		setIsNewClientFormOpen(false);
+	let refreshPage = useCallback(() => {
+		setPage(0);
 	}, []);
 
 	let createClient = useCallback((client) => {
 		http().post("/clients", client)
 			.then(({data}) => setClients([...clients, data]));
 		setIsNewClientFormOpen(false);
-	}, [clients]);
+		refreshPage();
+	}, [clients, refreshPage]);
 
 	let updateClient = useCallback(async (id, patch) => {
 		let {data: client} = await http().patch("clients/" + id, patch);
@@ -46,6 +43,14 @@ export function Clients() {
 		http().delete("/clients/" + id)
 			.then(() => setClients(clients.filter(c => c.id !== id)));
 	}, [clients]);
+
+	let showNewClientForm = useCallback(() => {
+		setIsNewClientFormOpen(true);
+	}, []);
+
+	let hideNewClientForm = useCallback(() => {
+		setIsNewClientFormOpen(false);
+	}, []);
 
 	return (
 		<Grid container justifyContent="center">
