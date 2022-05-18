@@ -6,6 +6,7 @@ import { useCallback, useEffect } from 'react';
 import { Link, Outlet, useLocation, useNavigate } from 'react-router-dom';
 import { Home } from './views/home/Home';
 import jwtDecode  from 'jwt-decode';
+import { AppBar, Box, Button, Toolbar } from '@mui/material';
 
 export function App() {
 
@@ -49,10 +50,23 @@ export function Root() {
 	}, [location, navigate, verifyAccessToken]);
 
 	return (
-		<div className="App">
-			| <Link to="/">Home</Link>
-			| <Link to="/clients">Clientes</Link>
-			| <span onClick={signout}>Sair</span>
+		<div>
+			<AppBar>
+				<Toolbar>
+					<Box sx={{ flexGrow: 1, display: { xs: 'none', md: 'flex' } }}>
+						<Button sx={{ my: 2, color: 'white', display: 'block' }}>
+							<Link to="/">Home</Link>
+						</Button>
+						<Button sx={{ my: 2, color: 'white', display: 'block' }}>
+							<Link to="/clients">Clientes</Link>
+						</Button>
+						<Button sx={{ my: 2, color: 'white', display: 'block' }}onClick={signout}>
+							Sair
+						</Button>
+          </Box>
+				</Toolbar>
+			</AppBar>
+
 			<Outlet/>
 		</div>
 	);
