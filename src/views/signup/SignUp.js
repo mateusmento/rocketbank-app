@@ -1,26 +1,57 @@
+import { Button, TextField, Typography } from "@mui/material";
 import { useCallback, useState } from "react";
-import { Link, useNavigate } from "react-router-dom";
 import { http } from "../../shared/http";
 
-export function SignUp() {
+export function SignUp({onSignUp}) {
 	let [name, setName] = useState("");
 	let [email, setEmail] = useState("");
 	let [password, setPassword] = useState("");
-	let navigate = useNavigate();
 
 	let signup = useCallback((e) => {
 		e.preventDefault();
 		http().post("/users", {name, email, password})
-			.then(({data}) => navigate("/signin"));
-	}, [name, email, password, navigate]);
+			.then(({data}) => onSignUp(data));
+	}, [name, email, password, onSignUp]);
 
 	return (
 		<form onSubmit={signup}>
-			<input className="d-block" value={name} onChange={(e) => setName(e.target.value)}/>
-			<input className="d-block" value={email} onChange={(e) => setEmail(e.target.value)}/>
-			<input className="d-block" type="password" value={password} onChange={(e) => setPassword(e.target.value)}/>
-			<Link className="d-block" to="/signin">Já tenho uma conta</Link>
-			<button type="submit">Criar</button>
+			<Typography variant="h5" element="h3" marginLeft={3}>Crie uma nova conta</Typography>
+			<TextField
+				label="Nome"
+				variant="outlined"
+				size="small"
+				fullWidth
+				margin="normal"
+				value={name}
+				onChange={(e) => setName(e.target.value)}
+			/>
+			<TextField
+				label="Email"
+				type="email"
+				variant="outlined"
+				size="small"
+				fullWidth
+				margin="normal"
+				value={email}
+				onChange={(e) => setEmail(e.target.value)}
+			/>
+			<TextField
+				type="password"
+				label="Senha"
+				variant="outlined"
+				size="small"
+				fullWidth
+				margin="normal"
+				value={password}
+				onChange={(e) => setPassword(e.target.value)}
+			/>
+			<Button
+				type="submit"
+				variant="contained"
+				sx={{ display: "block", ml: "auto", mt: 2 }}
+			>
+				Criar
+			</Button>
 		</form>
 	);
 }
