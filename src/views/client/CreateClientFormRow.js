@@ -19,27 +19,24 @@ export function CreateClientFormRow({onCreate, onCancel}) {
 	return (
 		<TableRow>
 			<TableCell>
-				<Editable isEditing value={formik.values.name} name="name" onChange={formik.handleChange}/>
-				{formik.errors.name && formik.touched.name
+				<form id="create-form" onSubmit={formik.handleSubmit}></form>
+				<Editable isEditing value={formik.values.name} name="name" onChange={formik.handleChange} form="create-form"/>
+				{formik.errors.name && formik.submitCount > 0
 						&& <small className="d-block">{formik.errors.name}</small>}
 			</TableCell>
 			<TableCell>
-				<Editable isEditing value={formik.values.cpf} name="cpf" onChange={formik.handleChange}/>
-				{formik.errors.cpf && formik.touched.cpf
+				<Editable isEditing value={formik.values.cpf} name="cpf" onChange={formik.handleChange} form="create-form"/>
+				{formik.errors.cpf && formik.submitCount > 0
 						&& <small className="d-block">{formik.errors.cpf}</small>}
 			</TableCell>
 			<TableCell>
-				<Editable isEditing value={formik.values.birthDate} name="birthDate" onChange={formik.handleChange}/>
-				{formik.errors.birthDate && formik.touched.birthDate
+				<Editable isEditing value={formik.values.birthDate} name="birthDate" onChange={formik.handleChange} form="create-form"/>
+				{formik.errors.birthDate && formik.submitCount > 0
 						&& <small className="d-block">{formik.errors.birthDate}</small>}
 			</TableCell>
 			<TableCell>
-				<Button type="button" onClick={formik.handleSubmit}>
-					<Check/>
-				</Button>
-				<Button type="button" onClick={onCancel}>
-					<Cancel/>
-				</Button>
+				<Button form="create-form" type="submit"> <Check/> </Button>
+				<Button type="button" onClick={onCancel}> <Cancel/> </Button>
 			</TableCell>
 		</TableRow>
 	);
