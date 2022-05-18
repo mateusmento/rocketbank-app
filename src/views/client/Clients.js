@@ -2,21 +2,32 @@ import { useCallback, useEffect, useState } from 'react';
 import { http } from '../../shared/http';
 import { ClientRow } from './ClientRow';
 import { CreateClientFormRow } from './CreateClientFormRow';
+import { Grid, Button, Table, TableBody, TableCell, TableHead, TableRow, Box } from '@mui/material';
+import { Add } from '@mui/icons-material';
+
+const pageSize = 5;
 
 export function Clients() {
 	let [clients, setClients] = useState([]);
-	let [page, setPage] = useState(1);
-	let [pageSize] = useState(10);
+	let [page, setPage] = useState(0);
 	let [isNewClientFormOpen, setIsNewClientFormOpen] = useState(false);
+	let [pagesCount, setPagesCount] = useState(0);
 
 	useEffect(() => {
-		http().get("/clients", {params: {page, size: pageSize}})
-			.then(({data}) => setClients(data));
-	}, [page, pageSize]);
+		http().get("/clients", {params: {page: page, size: pageSize}})
+			.then(({data}) => {
+				setClients(data.content);
+				setPagesCount(Math.ceil(data.totalCount / pageSize));
+			});
+	}, [page]);
 
-	let toggleNewClientForm = useCallback(() => {
-		setIsNewClientFormOpen(!isNewClientFormOpen)
-	}, [isNewClientFormOpen]);
+	let showNewClientForm = useCallback(() => {
+		setIsNewClientFormOpen(true);
+	}, []);
+
+	let hideNewClientForm = useCallback(() => {
+		setIsNewClientFormOpen(false);
+	}, []);
 
 	let createClient = useCallback((client) => {
 		http().post("/clients", client)
@@ -25,8 +36,11 @@ export function Clients() {
 	}, [clients]);
 
 	let updateClient = useCallback(async (id, patch) => {
-		await http().patch("clients/" + id, patch);
-	}, []);
+		let {data: client} = await http().patch("clients/" + id, patch);
+		let i = clients.findIndex(c => c.id === id);
+		clients[i] = client;
+		setClients([...clients]);
+	}, [clients]);
 
 	let removeClient = useCallback((id) => {
 		http().delete("/clients/" + id)
@@ -34,30 +48,38 @@ export function Clients() {
 	}, [clients]);
 
 	return (
-		<div>
-			<table>
-				<thead>
-					<tr>
-						<th>Nome</th>
-						<th>CPF</th>
-						<th>Data de nascimento</th>
-					</tr>
-				</thead>
-				<tbody>
-					{clients.map(client =>
-						<ClientRow
-							key={client.id}
-							client={client}
-							onUpdate={(patch) => updateClient(client.id, patch)}
-							onRemove={() => removeClient(client.id)}
-						/>
-					)}
-					{isNewClientFormOpen && <CreateClientFormRow onCreate={createClient}/>}
-				</tbody>
-			</table>
-			<button onClick={toggleNewClientForm}>Novo Cliente</button>
-			<button onClick={() => setPage(page - 1)}>Anterior</button>
-			<button onClick={() => setPage(page + 1)}>Próxima</button>
-		</div>
+		<Grid container justifyContent="center">
+			<Grid item>
+				<Table size="small" sx={{width: 900, marginTop: 5}}>
+					<TableHead>
+						<TableRow>
+							<TableCell>Nome</TableCell>
+							<TableCell>CPF</TableCell>
+							<TableCell>Data de nascimento</TableCell>
+							<TableCell>
+								<Button>
+									<Add onClick={showNewClientForm} />
+								</Button>
+							</TableCell>
+						</TableRow>
+					</TableHead>
+					<TableBody>
+						{isNewClientFormOpen && <CreateClientFormRow onCreate={createClient} onCancel={hideNewClientForm}/>}
+						{clients.map(client =>
+							<ClientRow
+								key={client.id}
+								client={client}
+								onUpdate={(patch) => updateClient(client.id, patch)}
+								onRemove={() => removeClient(client.id)}
+							/>
+						)}
+					</TableBody>
+				</Table>
+				<Box sx={{ml: "auto", mt: 2, width: "fit-content"}}>
+					<Button onClick={() => setPage(page - 1)} disabled={page <= 0}>Anterior</Button>
+					<Button onClick={() => setPage(page + 1)} disabled={page >= pagesCount-1}>Próxima</Button>
+				</Box>
+			</Grid>
+		</Grid>
 	);
 }
