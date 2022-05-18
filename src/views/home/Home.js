@@ -7,7 +7,9 @@ export function Home() {
 
 	return (
 		<Box sx={{width: "fit-content", mt: 20, marginX: "auto"}}>
-			<img src="/logo.png" alt="Rocket Bank Logo"/>
+			<Box sx={{width: "fit-content", marginX: "auto"}}>
+				<img src="/logo.png" alt="Rocket Bank Logo"/>
+			</Box>
 			<Typography variant="h5" element="h3" sx={{mt: 2, textAlign: "center"}}>
 				Bem vindo, {user.name}
 			</Typography>
