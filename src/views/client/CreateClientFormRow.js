@@ -1,38 +1,46 @@
+import { Button, TableCell, TableRow } from "@mui/material";
 import { useFormik } from "formik";
-import * as Yup from "yup";
+import { Editable } from "../../ui/Editable";
+import { Check, Cancel } from '@mui/icons-material';
+import moment from 'moment';
+import { clientValidation } from "./client-validation";
 
-export function CreateClientFormRow({onCreate}) {
+export function CreateClientFormRow({onCreate, onCancel}) {
 
 	let formik = useFormik({
 		initialValues: {},
-		onSubmit: onCreate,
-		validationSchema: Yup.object().shape({
-			name: Yup.string().required("Forneça o nome do cliente"),
-			cpf: Yup.string().required("Forneça o CPF do cliente"),
-			birthDate: Yup.date().required("Forneça a data de nascimento do cliente"),
-		})
+		onSubmit: (values) => {
+			values.birthDate = moment(values.birthDate, "DD/MM/YYYY").format("YYYY-MM-DD");
+			onCreate(values)
+		},
+		validationSchema: clientValidation
 	});
 
 	return (
-		<tr>
-			<td>
-				<input value={formik.values.name} name="name" onChange={formik.handleChange}/>
+		<TableRow>
+			<TableCell>
+				<Editable isEditing value={formik.values.name} name="name" onChange={formik.handleChange}/>
 				{formik.errors.name && formik.touched.name
 						&& <small className="d-block">{formik.errors.name}</small>}
-			</td>
-			<td>
-				<input value={formik.values.cpf} name="cpf" onChange={formik.handleChange}/>
+			</TableCell>
+			<TableCell>
+				<Editable isEditing value={formik.values.cpf} name="cpf" onChange={formik.handleChange}/>
 				{formik.errors.cpf && formik.touched.cpf
 						&& <small className="d-block">{formik.errors.cpf}</small>}
-			</td>
-			<td>
-				<input value={formik.values.birthDate} name="birthDate" onChange={formik.handleChange}/>
+			</TableCell>
+			<TableCell>
+				<Editable isEditing value={formik.values.birthDate} name="birthDate" onChange={formik.handleChange}/>
 				{formik.errors.birthDate && formik.touched.birthDate
 						&& <small className="d-block">{formik.errors.birthDate}</small>}
-			</td>
-			<td>
-				<button type="button" onClick={formik.handleSubmit}>Criar</button>
-			</td>
-		</tr>
+			</TableCell>
+			<TableCell>
+				<Button type="button" onClick={formik.handleSubmit}>
+					<Check/>
+				</Button>
+				<Button type="button" onClick={onCancel}>
+					<Cancel/>
+				</Button>
+			</TableCell>
+		</TableRow>
 	);
 }
